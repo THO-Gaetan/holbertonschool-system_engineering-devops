@@ -13,29 +13,30 @@ The accompanying Mermaid diagram (`0-simple_web_stack.mmd`) illustrates the comp
 - **IP Address**: 8.8.8.8
 - **Purpose**: Centralized computing resources for running all services
 
-### 2. Web Server (Nginx)
+### 2. Domain Name (foobar.com)
+- **Configuration**: www record points to IP 8.8.8.8
+- **Function**: Provides human-readable address for website access
+
+### 3. Web Server (Nginx)
 - **Role**: Handles HTTP requests, serves static content
 - **Configuration**: Listens on port 80 (HTTP)
 - **Function**: Acts as reverse proxy to application server
 
-### 3. Application Server
+### 4. Application Server
 - **Purpose**: Executes application code, processes dynamic content
 - **Interaction**: Communicates with web server and database
 - **Functionality**: Handles business logic, data processing
 
-### 4. Application Files (Codebase)
+### 5 Application Files (Codebase)
 - **Content**: Website code (HTML, CSS, JS, backend code)
 - **Location**: Stored on server filesystem
 - **Deployment**: Accessed by application server to serve content
 
-### 5. Database (MySQL)
+### 6. Database (MySQL)
 - **Type**: Relational database management system
 - **Usage**: Stores website data (user information, content)
 - **Interaction**: Queried by application server
 
-### 6. Domain Name (foobar.com)
-- **Configuration**: www record points to IP 8.8.8.8
-- **Function**: Provides human-readable address for website access
 
 ## Communication Flow
 1. User enters www.foobar.com in browser
