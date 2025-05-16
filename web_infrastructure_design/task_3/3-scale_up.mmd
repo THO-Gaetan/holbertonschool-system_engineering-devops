@@ -1,0 +1,61 @@
+---
+config:
+  layout: dagre
+---
+
+flowchart TD
+
+    %% Entry and Load Balancer
+    A[Users / Clients] --> B[DNS]
+    B --> C0[Firewall 1]
+    C0 --> CLB[Load Balancer HAProxy Cluster\nwith SSL over HTTPS]
+
+    subgraph Load_Balancer_Cluster
+        CLB --> LB1[HAProxy LB1]
+        CLB --> LB2[HAProxy LB2]
+    end
+
+    %% Web Servers (Separate Machines)
+    subgraph Web_Servers
+        LB1 & LB2 --> FW_WS1[Firewall - Web Server 1]
+        LB1 & LB2 --> FW_WS2[Firewall - Web Server 2]
+        LB1 & LB2 --> FW_WS3[Firewall - Web Server 3]
+        LB1 & LB2 --> FW_WS4[Firewall - Web Server 4]
+        
+        FW_WS1 --> WS1[Nginx Web Server 1 - ports 80/443]
+        FW_WS2 --> WS2[Nginx Web Server 2 - ports 80/443]
+        FW_WS3 --> WS3[Nginx Web Server 3 - ports 80/443]
+        FW_WS4 --> WS4[Nginx Web Server 4 - ports 80/443]
+
+        MON_WS1[Monitoring Client] --> WS1 & WS2 & WS3 & WS4
+    end
+
+    %% Application Servers (Separate Machines)
+    subgraph App_Servers
+        WS1 --> AS1[App Server 1 - Flask/Django/Node]
+        WS2 --> AS2[App Server 2 - Flask/Django/Node]
+        WS3 --> AS3[App Server 3 - Flask/Django/Node]
+        WS4 --> AS4[App Server 4 - Flask/Django/Node]
+
+        AS1 --> FILES1[Application Files]
+        AS2 --> FILES2[Application Files]
+        AS3 --> FILES3[Application Files]
+        AS4 --> FILES4[Application Files]
+
+        MON_AS1[Monitoring Client] --> AS1 & AS2 & AS3 & AS4
+    end
+
+    %% Database Servers (Separate Machines)
+    subgraph Database_Servers
+        AS1 --> DB1[MySQL Database 1]
+        AS2 --> DB2[MySQL Database 2]
+        AS3 --> DB3[MySQL Database 3]
+        AS4 --> DB4[MySQL Database 4]
+
+        DB1 -->|Duplicate| DB2 & DB3 & DB4
+
+        MON_DB1[Monitoring Client] --> DB1 & DB2 & DB3 & DB4
+    end
+
+    %% Monitoring Aggregation
+    MON_WS1 & MON_AS1 & MON_DB1 -->|Send Metrics| MONS[Monitoring Service\nSumologic]
